@@ -1,0 +1,158 @@
+Skip to content
+
+AI
+
+Api Integration Gateway
+
+
+Invite
+
+Republish
+
+
+
+
+
+Library
+
+File tree
+Commands
+Search files
+
+Packager files
+Config files
+
+Agent
+4
+# ============================================================================
+# SECURITY: Minimum release age for npm packages (supply-chain attack defense)
+# ============================================================================
+#
+# This setting requires that any npm package version must have been published
+# for at least 1 day (1440 minutes) before pnpm will allow installing it.
+# This is a critical defense against supply-chain attacks. In most cases,
+# malicious npm releases are discovered and pulled within hours, so a 1-day
+# delay provides a strong safety buffer.
+#
+# DO NOT DISABLE THIS SETTING. Removing or setting it to 0 is considered
+# extremely dangerous and leaves the entire workspace vulnerable to supply-
+# chain attacks, which have been the #1 vector for npm ecosystem compromises.
+#
+# If you absolutely need to install a package before the 1-day window has
+# passed (e.g. an urgent security bugfix), you can add it to the
+# `minimumReleaseAgeExclude` allowlist below. Only consider doing this for
+# packages released by trusted organizations with an impeccable security
+# posture (e.g. Replit packsges, react from Meta, typescript from Microsoft). Even then,
+# remove the exclusion once the 1-day window has passed.
+#
+# Example:
+#   minimumReleaseAgeExclude:
+#     - react
+#     - typescript
+#
+# ============================================================================
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  # Exclude @replit scoped packages from the minimum release age check.
+  # These are published by Replit and trusted — the supply-chain attack vector
+  # this setting guards against does not apply to our own packages.
+  - '@replit/*'
+  - stripe-replit-sync
+
+packages:
+  - artifacts/*
+  - lib/*
+  - lib/integrations/*
+  - scripts
+
+catalog:
+  '@replit/vite-plugin-cartographer': ^0.5.1
+  '@replit/vite-plugin-dev-banner': ^0.1.1
+  '@replit/vite-plugin-runtime-error-modal': ^0.0.6
+  '@tailwindcss/vite': ^4.1.14
+  '@tanstack/react-query': ^5.90.21
+  '@types/node': ^25.3.3
+  '@types/react': ^19.2.0
+  '@types/react-dom': ^19.2.0
+  '@vitejs/plugin-react': ^5.0.4
+  class-variance-authority: ^0.7.1
+  clsx: ^2.1.1
+  drizzle-orm: ^0.45.1
+Published your App
+
+
+
+Pasted--Replit-pnpm-monorepo-OpenAI-Anthropic-API-Replit-Integ_1775384294098.txt
+2 days ago
+
+4 messages & 14 actions
+
+Checkpoint made
+2 days ago
+
+Worked for 41 seconds
+
+13 messages & 23 actions
+
+Presented output
+API Portal
+Website
+
+Open
+Everything is up and running. Here's what was built:
+
+AI Proxy API — fully functional dual-compatible reverse proxy:
+
+GET /v1/models — returns all 8 models with provider info. Requires Bearer token or returns 401
+POST /v1/chat/completions — OpenAI-compatible interface. Routes to OpenAI (gpt-5.2, o4-mini, etc.) or Anthropic (claude-opus-4-6, etc.) based on model name. Full tool/function call support, streaming, and keepalive
+POST /v1/messages — Anthropic native Messages format. Routes Claude models natively and GPT models with bidirectional format conversion. Full streaming SSE events
+API Portal — dark-themed dashboard at / showing:
+
+Live health indicator (green dot — currently Online)
+Base URL and auth header instructions with copy buttons
+All 3 endpoints with method badges and compatibility labels
+All 8 models in a grid with OpenAI/Anthropic tags
+4-step CherryStudio setup guide
+Quick test curl examples with syntax highlighting
+Setup for CherryStudio: Set Base URL to your deployed domain, API Key = your PROXY_API_KEY secret, and add any of the model IDs listed. Both OpenAI and Anthropic provider types work.
+
+
+Checkpoint made
+2 days ago
+
+Worked for 4 minutes
+Want users to get these changes? Republish this App.
+Published apps not available
+There is an issue preventing you from publishing. You may be able to resolve this using the Publishing pane.
+
+Open Published apps
+
+Published your app
+2 days ago
+
+Published your app
+2 days ago
+ 500 {"error":{"message":"Internal server error","type":"api_error"}}
+Retrying in 16 seconds… (attempt 8/10) 反代出现这个错误
+
+2 days ago
+
+Diagnosing server error causes
+Let me check the logs to find the root cause:
+
+
+2 actions
+The dev logs don't show the error. Let me reproduce it directly to see the actual underlying error:
+
+
+3 actions
+Both models respond correctly in non-stream mode. Let me test streaming, which is what clients like CherryStudio typically use:
+
+
+3 actions
+Both streaming and non-streaming work correctly in development. The issue must be on the deployed (production) version. Let me check the production deployment logs:
+
+
+2 actions
+Found the root cause. The Anthropic integration runs through Vertex AI (you can see req_vrtx_* IDs), which rejects two extra fields that CherryStudi...
