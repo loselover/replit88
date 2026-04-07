@@ -56,14 +56,76 @@ router.post("/messages", async (req, res) => {
   }
 });
 
+type AnyRecord = Record<string, unknown>;
+
+function stripCacheControlScope(obj: unknown): unknown {
+  if (Array.isArray(obj)) {
+    return obj.map(stripCacheControlScope);
+  }
+  if (obj !== null && typeof obj === "object") {
+    const record = obj as AnyRecord;
+    const result: AnyRecord = {};
+    for (const [k, v] of Object.entries(record)) {
+      if (k === "cache_control" && v !== null && typeof v === "object") {
+        const cc = { ...(v as AnyRecord) };
+        if ("ephemeral" in cc && cc["ephemeral"] !== null && typeof cc["ephemeral"] === "object") {
+          const eph = { ...(cc["ephemeral"] as AnyRecord) };
+          delete eph["scope"];
+          cc["ephemeral"] = eph;
+        }
+        delete cc["scope"];
+        result[k] = cc;
+      } else {
+        result[k] = stripCacheControlScope(v);
+      }
+    }
+    return result;
+  }
+  return obj;
+}
+
+function sanitizeAnthropicParams(params: AnyRecord): AnyRecord {
+  const clean: AnyRecord = {};
+  const unsupportedTopLevel = new Set([
+    "output_config", "thinking", "betas", "keep_alive",
+  ]);
+
+  for (const [k, v] of Object.entries(params)) {
+    if (unsupportedTopLevel.has(k)) continue;
+    if (k === "system") {
+      if (Array.isArray(v)) {
+        clean[k] = (v as AnyRecord[]).map((block) => {
+          const cleaned = stripCacheControlScope(block) as AnyRecord;
+          return cleaned;
+        });
+      } else {
+        clean[k] = v;
+      }
+    } else if (k === "messages" && Array.isArray(v)) {
+      clean[k] = (v as AnyRecord[]).map((msg) => {
+        const m = { ...msg };
+        if (Array.isArray(m["content"])) {
+          m["content"] = (m["content"] as AnyRecord[]).map((block) =>
+            stripCacheControlScope(block)
+          );
+        }
+        return m;
+      });
+    } else {
+      clean[k] = v;
+    }
+  }
+
+  return clean;
+}
+
 async function handleAnthropicNative(
   res: import("express").Response,
   params: Record<string, unknown>
 ) {
   const anthropic = getAnthropicClient();
 
-  const cleanParams: Record<string, unknown> = { ...params };
-  delete cleanParams["keep_alive"];
+  const cleanParams = sanitizeAnthropicParams(params);
 
   if (!cleanParams["max_tokens"]) {
     cleanParams["max_tokens"] = 8192;
