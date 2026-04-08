@@ -37,11 +37,13 @@ Compatible with clients like **CherryStudio**, **Open WebUI**, **Cursor**, and a
 ## One-Click Deploy to Replit
 
 1. Click the **Run on Replit** button above
-2. Open the **Shell** and run: `pnpm install && pnpm run dev`
-3. Go to **Tools → Integrations** and connect **OpenAI** and **Anthropic**
-4. Go to **Tools → Secrets** and add `PROXY_API_KEY` = any password you choose
-5. Click **Publish**
-6. If prompted for a **Run command**, enter:
+2. After the project loads, paste the following into the **AI Agent chat**:
+
+   > 请帮我完成项目初始化：1. 安装依赖 2. 启动 API Server 和 Portal 工作流 3. 在 Tools→Integrations 连接 OpenAI 和 Anthropic 4. 在 Tools→Secrets 提示我设置 PROXY_API_KEY
+
+3. Follow the agent's instructions to set up Integrations and `PROXY_API_KEY`
+4. Click **Publish**
+5. If prompted for a **Run command**, enter:
    ```
    node --enable-source-maps artifacts/api-server/dist/index.mjs
    ```
