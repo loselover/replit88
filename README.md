@@ -37,10 +37,14 @@ Compatible with clients like **CherryStudio**, **Open WebUI**, **Cursor**, and a
 ## One-Click Deploy to Replit
 
 1. Click the **Run on Replit** button above
-2. If prompted for a run command, enter: `pnpm run dev`
+2. Open the **Shell** and run: `pnpm install && pnpm run dev`
 3. Go to **Tools → Integrations** and connect **OpenAI** and **Anthropic**
 4. Go to **Tools → Secrets** and add `PROXY_API_KEY` = any password you choose
 5. Click **Publish**
+6. If prompted for a **Run command**, enter:
+   ```
+   node --enable-source-maps artifacts/api-server/dist/index.mjs
+   ```
 
 ### Step 1 — Add AI Integrations
 
