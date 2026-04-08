@@ -1,18 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import { logger } from "../../lib/logger";
+import { getApiKey } from "../../lib/keyManager";
 
 export function proxyAuth(req: Request, res: Response, next: NextFunction): void {
-  const apiKey = process.env["PROXY_API_KEY"];
-
-  if (!apiKey) {
-    res.status(500).json({
-      error: {
-        message: "PROXY_API_KEY not configured on server",
-        type: "server_error",
-      },
-    });
-    return;
-  }
+  const apiKey = getApiKey();
 
   const authHeader = req.headers.authorization;
   const xApiKey = req.headers["x-api-key"] as string | undefined;
@@ -31,12 +22,7 @@ export function proxyAuth(req: Request, res: Response, next: NextFunction): void
   }
 
   if (!token) {
-    logger.warn({
-      authMethod,
-      hasAuthorization: !!authHeader,
-      hasXApiKey: !!xApiKey,
-      authorizationPrefix: authHeader ? authHeader.slice(0, 10) : null,
-    }, "Auth failed: no token extracted");
+    logger.warn({ authMethod, hasAuthorization: !!authHeader, hasXApiKey: !!xApiKey }, "Auth failed: no token");
     res.status(401).json({
       error: {
         message: "Missing API key. Use Authorization: Bearer <key> or x-api-key: <key>",
@@ -47,12 +33,7 @@ export function proxyAuth(req: Request, res: Response, next: NextFunction): void
   }
 
   if (token !== apiKey) {
-    logger.warn({
-      authMethod,
-      tokenLength: token.length,
-      expectedLength: apiKey.length,
-      tokenPrefix: token.slice(0, 4),
-    }, "Auth failed: key mismatch");
+    logger.warn({ authMethod, tokenLength: token.length, expectedLength: apiKey.length }, "Auth failed: key mismatch");
     res.status(401).json({
       error: {
         message: "Invalid API key",
