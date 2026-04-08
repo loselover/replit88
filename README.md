@@ -37,10 +37,14 @@ Compatible with clients like **CherryStudio**, **Open WebUI**, **Cursor**, and a
 ## One-Click Deploy to Replit
 
 1. Click the **Run on Replit** button above
-2. Fork the project to your Replit account
-3. Add the required integrations (see below)
-4. Set your `PROXY_API_KEY` secret
-5. Click **Publish**
+2. After the project loads, open the **AI Agent chat** and paste this message:
+
+```
+请帮我完成项目初始化：1. 安装依赖 2. 启动 API Server 和 Portal 工作流 3. 在 Tools→Integrations 连接 OpenAI 和 Anthropic 4. 在 Tools→Secrets 提示我设置 PROXY_API_KEY
+```
+
+3. Follow the agent's instructions to connect Integrations and set your `PROXY_API_KEY` secret
+4. Click **Publish**
 
 ### Step 1 — Add AI Integrations
 
