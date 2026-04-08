@@ -4,7 +4,7 @@ A self-hosted reverse proxy that routes requests to **OpenAI** and **Anthropic**
 
 Compatible with clients like **CherryStudio**, **Open WebUI**, **Cursor**, and any OpenAI-compatible tool.
 
-[![Run on Replit](https://replit.com/badge/github/loselover/ai-api-gateway)](https://replit.com/new/github/loselover/ai-api-gateway)
+[![Run on Replit](https://replit.com/badge/github/loselover/replit88)](https://replit.com/new/github/loselover/replit88)
 
 ---
 
